@@ -1,0 +1,9 @@
+@use "./variable.scss" as *;
+
+#app {
+  // margin-bottom: $navbar-height;
+}
+body {
+  padding-bottom: $navbar-height;
+  margin-bottom: $navbar-height;
+}

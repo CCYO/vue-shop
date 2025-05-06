@@ -1,0 +1,20 @@
+import { COMMON } from "@/config";
+import { SCHEMA_NAME, HOST } from "../constant";
+
+const { attributes } = COMMON.validate;
+
+const json = {
+  definitions: {
+    email: attributes.EMAIL,
+    name: attributes.NAME,
+    city: attributes.CITY,
+    star: attributes.STAR,
+    hash: attributes.HASH,
+    url: attributes.URL_ADDR,
+    password: attributes.PASSWORD,
+    price: attributes.PRICE,
+    stock: attributes.STOCK,
+  },
+};
+
+export default { host: HOST, name: SCHEMA_NAME.base, json };

@@ -1,0 +1,12 @@
+@import "../../node_modules/bootstrap/dist/css/bootstrap-reboot.css";
+
+*,
+html,
+body {
+  font-family: "JetBrains Mono", "Noto Serif TC", "Courier New", Courier,
+    monospace;
+}
+
+html body {
+  background-color: rgb(219, 159, 159);
+}
