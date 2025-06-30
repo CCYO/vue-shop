@@ -5,14 +5,19 @@ export const useStatusStore = defineStore("status", () => {
   const loading = ref(false);
   const isRouterAlive = ref(true);
 
-  function reload(msg) {
-    let alertMsg = "頁面將重新整理。";
-    if (msg) {
-      alertMsg = `${msg}，${alertMsg}`;
+  function reload({ prefix = "", msg = "", noAlert = false } = {}) {
+    if (!noAlert) {
+      let _msg = "頁面將重新整理。";
+      if (msg) {
+        _msg = msg;
+      } else if (prefix) {
+        _msg = `${prefix}，${_msg}`;
+      }
+      alert(_msg);
     }
-    alert(alertMsg);
     isRouterAlive.value = false;
     nextTick(() => {
+      loadend();
       isRouterAlive.value = true;
     });
   }
@@ -30,8 +35,8 @@ export const useStatusStore = defineStore("status", () => {
   return {
     isRouterAlive,
     loading,
-    loadend,
     loadstart,
+    loadend,
     reload,
   };
 });

@@ -6,17 +6,22 @@ const statusStore = useStatusStore(pinia);
 
 const api = Axios.create({
   baseURL: "/api",
-  redirectThenError: true,
+  // 轉場載入動畫
+  _transitionModal: true,
 });
 
 api.interceptors.request.use((config) => {
-  statusStore.loadstart();
+  if (config._transitionModal) {
+    statusStore.loadstart();
+  }
   return config;
 });
 api.interceptors.response.use(_resolve, _reject);
 
 function _resolve(response) {
-  statusStore.loadend();
+  if (response.config._transitionModal) {
+    statusStore.loadend();
+  }
   return response.data;
 }
 
@@ -26,7 +31,7 @@ function _reject(error) {
   if (status >= 500) {
     errorModel = { status: 500, msg: "伺服器發生未知錯誤" };
   } else if (status === 401) {
-    errorModel = { status, msg: "登入已過期" };
+    errorModel = { status, msg: "登入已過期，請重新登入" };
   }
   return Promise.reject(errorModel);
 }

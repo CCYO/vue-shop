@@ -10,14 +10,31 @@ function validate(schema, data, parentSchema, dataCtx) {
     return true;
   }
   let error = { keyword: "myKeyword", message };
+  // 蒐集別名
+  const alias_map = schema.reduce((map, item) => {
+    if (typeof item === "string") {
+      map.set(item, item);
+    } else if (Array.isArray(item)) {
+      const [propertyInData, propertyIn_old] = item;
+      map.set(propertyInData, propertyIn_old);
+    }
+    return map;
+  }, new Map());
   let params_errors = Object.entries(data).reduce((acc, [prorperty, value]) => {
     let valid = true;
-    if (schema.includes(prorperty)) {
-      let _value = _old[prorperty];
+    // 確認data是否有schema要校驗的屬性
+    // 確認data是否有schema要校驗的別名屬性
+    if (
+      alias_map.has(prorperty) &&
+      _old[alias_map.get(prorperty)] !== "" &&
+      _old[alias_map.get(prorperty)] !== null
+    ) {
+      // if (schema.includes(prorperty)) {
+      let _value = _old[alias_map.get(prorperty)];
       if (typeof _value === "number") {
         value *= 1;
       }
-      valid = value !== _old[prorperty];
+      valid = value !== _value;
     }
     if (!valid) {
       acc.push({

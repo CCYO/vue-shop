@@ -1,7 +1,7 @@
-const { seq } = require("../db/mysql");
+const { MySQL } = require("../db");
 //  sequelize transaction
 module.exports = async function (ctx, next) {
-  return seq.transaction(async (t) => {
+  return MySQL.seq.transaction(async (t) => {
     await next();
   });
 };

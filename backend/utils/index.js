@@ -1,4 +1,5 @@
 module.exports = {
+  ERR_RES: require("./err_res"),
   validate: require("./validate"),
   query: require("./query"),
   init: require("./init"),

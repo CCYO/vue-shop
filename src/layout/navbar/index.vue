@@ -21,6 +21,7 @@ let active = computed(() => (path) => {
     return path === `/${route.path.split('/')[1]}`
 })
 
+
 onMounted(() => {
     // 取得navbar數據
     let navbar = constantRoutes
@@ -43,5 +44,9 @@ onMounted(() => {
 
 .my-navbar {
     height: $navbar-height;
+}
+
+.active {
+    pointer-events: none;
 }
 </style>

@@ -3,18 +3,24 @@ const { ENV } = require("./config");
 const { SESSION } = require("./_config");
 
 /* NPM        ----------------------------------------------------------------------------- */
-const Koa = require("koa");
+// 支援sourcemap
+require("source-map-support").install();
 //  處理非 multipart/form-data 的請求數據
 const bodyparser = require("koa-bodyparser")({
   enableTypes: ["json", "form", "text"],
 });
 
+const Koa = require("koa");
+
 /* UTILS      ----------------------------------------------------------------------------- */
+
 //  錯誤處理
+const { errorHandle } = require("./utils");
 const { transaction, session } = require("./middleware");
 const router = require("./router");
-const { errorHandle } = require("./utils");
+
 /* RUNTIME    ----------------------------------------------------------------------------- */
+
 const app = new Koa();
 //  加密 session
 app.keys = [SESSION.KEY];

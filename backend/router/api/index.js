@@ -3,16 +3,16 @@
  */
 const Router = require("koa-router");
 
-const seller = require("./seller");
-const good = require("./good");
+const user = require("./user");
+const goods = require("./goods");
 const myStore = require("./myStore");
-const shoppingCar = require("./shoppingCar");
+const shopping = require("./shopping");
 
 const router = new Router();
 
-router.use(seller.routes());
-router.use(good.routes());
+router.use(user.routes());
+router.use(goods.routes());
 router.use(myStore.routes());
-router.use(shoppingCar.routes());
+router.use(shopping.routes());
 
 module.exports = router;

@@ -2,9 +2,11 @@
     <!-- <Suspense>
         <template #default> -->
     <RouterView v-slot="{ Component }">
-        <template v-if="Component">
+        <!-- <template v-if="Component"> -->
+        <KeepAlive>
             <component :is="Component"></component>
-        </template>
+        </KeepAlive>
+        <!-- </template> -->
     </RouterView>
     <!-- </template>
         <template #fallback>
@@ -14,6 +16,7 @@
 </template>
 
 <script setup>
+
 
 </script>
 

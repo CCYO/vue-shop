@@ -1,6 +1,6 @@
 import USER from "./user";
-import GOOD from "./good";
+import GOODS from "./goods";
 import MY_STORE from "./myStore";
-import SHOPPING_CART from "./shoppingCart";
+import SHOPPING from "./shopping";
 
-export default { USER, GOOD, MY_STORE, SHOPPING_CART };
+export default { USER, GOODS, MY_STORE, SHOPPING };

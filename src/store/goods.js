@@ -5,7 +5,7 @@ import { request } from "@/utils";
 
 import $router from "@/router";
 
-export const useGoodStore = defineStore("goods", function () {
+export const useGoodsStore = defineStore("goods", function () {
   let state = reactive({
     hot: {
       list: [],
@@ -13,7 +13,7 @@ export const useGoodStore = defineStore("goods", function () {
       currentPage: 1,
     },
   });
-  let types = ref([]);
+  let types = ref([{ id: 0, zh: "熱門", en: "hot" }]);
 
   const currentType = ref($router.currentRoute.value.params.type);
 
@@ -21,29 +21,29 @@ export const useGoodStore = defineStore("goods", function () {
     currentType.value = type;
   }
 
-  async function requestGoods({ offset, limit, type }) {
+  async function requestPage({ offset, limit, type }) {
     const payload = {
       offset,
       limit,
       type,
     };
-    let { data } = await request.GOOD.READ(payload);
+    let { data } = await request.GOODS.READ(payload);
+    const { types, count, list } = data;
+    _init(types);
+    _insertGoods({ offset, limit }, { list, count });
 
-    _init(data.types);
-    _insertGoods({ offset, limit }, data);
-
-    function _insertGoods({ offset, limit }, { goods, total }) {
+    function _insertGoods({ offset, limit }, { list, count }) {
       const start = offset;
       const end = offset + limit;
       const obj = state[payload.type];
-      if (goods.length) {
+      if (list.length) {
         for (let n = start, m = 0; end > n; n++, m++) {
-          if (goods[m]) {
-            obj.list[n] = goods[m];
+          if (list[m]) {
+            obj.list[n] = list[m];
           }
         }
       }
-      obj.total = total;
+      obj.total = count;
       obj.currentPage = Math.ceil((offset + 1) / limit);
     }
   }
@@ -67,7 +67,7 @@ export const useGoodStore = defineStore("goods", function () {
     types,
     currentType,
 
-    requestGoods,
+    requestPage,
     changeCurrentType,
   };
 });

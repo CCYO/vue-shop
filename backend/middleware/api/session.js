@@ -3,10 +3,9 @@ const { SuccModel } = require("../../utils");
 async function login(ctx, next) {
   await next();
   const { errno, data } = ctx.body;
-  if (errno) {
-    return;
+  if (!errno) {
+    ctx.session.user = data;
   }
-  ctx.session.user = data;
 }
 
 async function logout(ctx, next) {
@@ -14,7 +13,16 @@ async function logout(ctx, next) {
   ctx.body = new SuccModel();
 }
 
+async function update(ctx, next) {
+  await next();
+  const { errno, data } = ctx.body;
+  if (!errno) {
+    ctx.session.user = data.item;
+  }
+}
+
 module.exports = {
   login,
+  update,
   logout,
 };

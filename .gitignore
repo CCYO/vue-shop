@@ -1,15 +1,39 @@
-_config
+# ##### ##### ##### ##### ##### 
+# gitignore遇上!時的邏輯，會確認可否到達標的，才確實「拒絕」忽略該標的
+# 以下範例
+# 目的：除了「.md後綴檔案」以外，忽略「任一層級_config」的「子孫資料夾以及檔案」
+# 1.忽略「位於任一層級的_config」的「_config自身」以及「子孫資料夾」以及「子孫資料夾內的所有檔案」
+**/_config/**
+# 2.「拒絕」忽略「位於任一層級的_config」的「子孫資料夾」內的「.md後綴檔案」
+!*.md
+# --此刻必須要能夠進入「擁有.md後綴檔案」的『「位於任一層級的_config」的「子孫資料夾」』
+# 3.「拒絕」忽略「位於任一層級的_config」的「_config自身」以及「子孫資料夾」
+!**/_config/**/
+# 達成目的，以上的寫法符合.gitignore的機制邏輯，但在可讀性上有點先射箭再畫靶的感覺
+# 依據可讀性，可以寫成以下
+# **/_config/**
+# !**/_config/**/
+# !**/_config/**/*.md
+# ##### ##### ##### ##### ##### 
+
+# ##### ##### ##### ##### ##### 
+# .gitignore特殊規則
+# 若一個pattern沒有包含任何「/」，會自動將其「遞迴比對所有路徑中的同名檔案與資料夾」
+# 範例如下
+node_modules
+# 等價 **/node_modules
+# ##### ##### ##### ##### ##### 
 
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+yarn-error.log* 
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+
 .DS_Store
 dist
 dist-ssr

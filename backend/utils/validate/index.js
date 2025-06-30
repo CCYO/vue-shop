@@ -1,5 +1,5 @@
 /* CONFIG      ----------------------------------------------------------------------------- */
-const { COMMON } = require("../../config");
+const { validate } = require("../../common");
 const schemaList = require("./schema");
 
-module.exports = COMMON.validate.genValidator(schemaList);
+module.exports = validate.genValidator(schemaList);

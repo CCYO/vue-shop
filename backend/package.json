@@ -4,7 +4,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prod": "pm2 start ./_config/ecosystem.config.js",
+    "db_sync": "node ./db/mysql/_sync"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +14,8 @@
     "cls-hooked": "^4.2.2",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
+    "firebase-admin": "^13.3.0",
+    "formidable": "^3.5.4",
     "koa": "^2.16.0",
     "koa-bodyparser": "^4.4.1",
     "koa-generic-session": "^2.3.1",
@@ -22,7 +25,9 @@
     "koa-router": "^13.0.1",
     "mysql2": "^3.13.0",
     "nodemon": "^3.1.9",
+    "pm2": "^6.0.6",
     "redis": "^4.7.0",
-    "sequelize": "^6.37.6"
+    "sequelize": "^6.37.6",
+    "source-map-support": "^0.5.21"
   }
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"avatar.js","sources":["../../../../common/src/config/avatar.js"],"sourcesContent":["export default {\n  // 單位bit，（1024 * 1024）則為MB\n  MIN_SIZE: 1,\n  MAX_SIZE: 10 * 1024 * 1024,\n  MIME: [\"image/jpeg\", \"image/png\"],\n};\n"],"names":[],"mappings":";;AAAA,MAAe,SAAA;AAAA;AAAA,EAEb,UAAU;AAAA,EACV,UAAU,KAAK,OAAO;AAAA,EACtB,MAAM,CAAC,cAAc,WAAW;AAClC;;"}

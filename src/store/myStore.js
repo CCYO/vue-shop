@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import { request } from "@/utils";
 
 export const useMyStoreStore = defineStore("myStore", () => {
-  const good = reactive({
+  const goods = reactive({
     list: [],
     total: {
       all: 0,
@@ -17,28 +17,28 @@ export const useMyStoreStore = defineStore("myStore", () => {
     if (response.errno) {
       return response.msg;
     }
-    const newGood = response.data.good;
-    good.list.push(newGood);
-    const { en } = newGood.type;
-    if (good.total[en]) {
-      good.total[en]++;
+    const { item } = response.data;
+    goods.list.push(item);
+    const { en } = item.type;
+    if (goods.total[en]) {
+      goods.total[en]++;
     }
-    good.total.all++;
+    goods.total.all++;
     return null;
   }
   async function requestRemove(payload) {
-    const response = await request.MY_STORE.REMOVE(payload);
+    const response = await request.MY_STORE.REMOVE({ data: { ...payload } });
     if (response.errno) {
       return response.msg;
     }
-    const index = good.list.findIndex((item) => item.id === payload.id);
+    const index = goods.list.findIndex((item) => item.id === payload.id);
     const {
       type: { en },
-    } = good.list.splice(index, 1)[0];
-    if (good.total[en]) {
-      good.total[en]--;
+    } = goods.list.splice(index, 1)[0];
+    if (goods.total[en]) {
+      goods.total[en]--;
     }
-    good.total.all--;
+    goods.total.all--;
     return null;
   }
   async function requestModify(payload) {
@@ -47,53 +47,54 @@ export const useMyStoreStore = defineStore("myStore", () => {
       return response.msg;
     }
     const newData = { ...payload };
-    let index = good.list.findIndex((item) => item.id === newData.id);
-    const theGoodData = good.list[index];
+    let index = goods.list.findIndex((item) => item.id === newData.id);
+    const theGoodsData = goods.list[index];
     // 修改item.type數據
     if (newData.type_id) {
-      const newType = good.types.find((item) => item.id === newData.type_id);
+      const newType = goods.types.find((item) => item.id === newData.type_id);
       // 舊分類數據總數-1
-      if (good.total[theGoodData.type.en]) {
-        good.total[theGoodData.type.en]--;
+      if (goods.total[theGoodsData.type.en]) {
+        goods.total[theGoodsData.type.en]--;
       }
       // 新分類數據總數+1
-      if (good.total[newType.en]) {
-        good.total[newType.en]++;
+      if (goods.total[newType.en]) {
+        goods.total[newType.en]++;
       }
-      theGoodData.type_id = newData.type_id;
-      theGoodData.type = { ...newType };
+      theGoodsData.type_id = newData.type_id;
+      theGoodsData.type = { ...newType };
       delete newData.type_id;
     }
-    good.list[index] = { ...theGoodData, ...newData };
+    goods.list[index] = { ...theGoodsData, ...newData };
     return null;
   }
   // 發出取得數據請求
   async function requestGoods({ limit, offset, type_id, order, sort } = {}) {
-    const inited = good.types.length > 1;
+    const inited = goods.types.length > 1;
     let payload = { inited, limit, offset, type_id, order, sort };
     let response = await request.MY_STORE.READ(payload);
     if (response.errno) {
       return response.msg;
     }
     let { data } = response;
+    const { list, count, types } = data;
     // 將遠端取得的數據與本地同步
     if (!inited) {
-      good.types = good.types.concat(data.types);
+      goods.types = goods.types.concat(types);
     }
-    let newList = data.goods.filter((item) => {
-      let some = good.list.some(({ id }) => item.id === id);
+    let newList = list.filter((item) => {
+      let some = goods.list.some(({ id }) => item.id === id);
       return !some;
     });
     if (newList.length) {
-      good.list = good.list.concat(newList);
+      goods.list = goods.list.concat(newList);
     }
-    let { en } = good.types.find((item) => item.id === type_id);
-    good.total[en] = data.count;
+    let { en } = goods.types.find((item) => item.id === type_id);
+    goods.total[en] = count;
     return null;
   }
 
   return {
-    good,
+    goods,
     requestAdd,
     requestRemove,
     requestModify,

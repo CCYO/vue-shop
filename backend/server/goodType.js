@@ -2,8 +2,8 @@ const { MySQL } = require("../db");
 const { init } = require("../utils");
 
 async function find(data) {
-  let result = await MySQL.GoodType.findAll(data);
-  return init.goodType(result);
+  let rows = await MySQL.GoodsType.findAll(data);
+  return init.goodsType(rows);
 }
 
 module.exports = {

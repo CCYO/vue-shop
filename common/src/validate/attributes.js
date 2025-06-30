@@ -51,6 +51,10 @@ const HASH = {
   },
 };
 
+const IMG_EXT = {
+  enum: ["jpg", "jpeg", "png"],
+};
+
 const EMAIL = {
   type: "string",
   format: "email",
@@ -74,6 +78,13 @@ const PASSWORD = {
   maxLength: 20,
 };
 
+const ID_LIST = {
+  type: "array",
+  minItems: 1,
+  uniqueItems: true,
+  _items: "number",
+};
+
 export default {
   REGEXP,
   PASSWORD,
@@ -85,4 +96,6 @@ export default {
   EMAIL,
   PRICE,
   STOCK,
+  IMG_EXT,
+  ID_LIST,
 };

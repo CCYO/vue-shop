@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const READ = {
+const FIND = {
   all(data) {
     if (!data) {
       data = { id: { [Op.not]: null } };
@@ -13,5 +13,5 @@ const READ = {
 };
 
 module.exports = {
-  READ,
+  FIND,
 };

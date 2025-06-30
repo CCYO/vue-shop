@@ -1,4 +1,4 @@
-const READ = {
+const FIND = {
   NEED_LOGIN: {
     errno: 40902,
     msg: "需要登入權限",
@@ -6,5 +6,5 @@ const READ = {
 };
 
 export default {
-  READ,
+  FIND,
 };

@@ -87,8 +87,10 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+async function onListening() {
   let addr = server.address();
   let bind = typeof addr === "string" ? "pipe " + addr : "PORT: " + addr.port;
-  console.log(`NODE: ${process.version}, MODE: ${ENV.MODE}, ${bind}`);
+  console.log(
+    `NODE: ${process.version}\nMODE: ${ENV.MODE}, ${bind}\n====================================`
+  );
 }

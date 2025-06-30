@@ -17,7 +17,7 @@ const router = new Router({
 router.post(
   "/",
   API.permission.login,
-  API.validate.myStore.addGood,
+  API.validate.myStore.add,
   async (ctx) => {
     ctx.body = await C.myStore.addGood(ctx._request_payload);
   }
@@ -26,7 +26,7 @@ router.post(
 router.delete(
   "/",
   API.permission.login,
-  API.validate.myStore.removeGood,
+  API.validate.myStore.remove,
   async (ctx) => {
     ctx.body = await C.myStore.removeGood(ctx._request_payload);
   }
@@ -35,7 +35,7 @@ router.delete(
 router.patch(
   "/",
   API.permission.login,
-  API.validate.myStore.modifyGood,
+  API.validate.myStore.modify,
   async (ctx) => {
     ctx.body = await C.myStore.modifyGood(ctx._request_payload);
   }
@@ -44,7 +44,7 @@ router.patch(
 router.get(
   "/",
   API.permission.login,
-  API.validate.myStore.getPage,
+  API.validate.myStore.readPage,
   async (ctx) => {
     ctx.body = await C.myStore.readPage(ctx._request_payload);
   }

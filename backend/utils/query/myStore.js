@@ -1,8 +1,8 @@
-const ADD = {
+const CREATE = {
   one: (data) => data,
 };
 
-const REMOVE = {
+const DESTORY = {
   one({ id, seller_id }) {
     return {
       where: {
@@ -21,17 +21,8 @@ const UPDATE = {
   },
 };
 
-const READ = {
-  count({ type_id, seller_id }) {
-    return {
-      where: {
-        seller_id,
-        type_id,
-      },
-    };
-  },
-
-  myGood({ seller_id, id }) {
+const FIND = {
+  myGood({ id }) {
     return {
       attributes: [
         "id",
@@ -44,7 +35,6 @@ const READ = {
       ],
       where: {
         id,
-        seller_id,
       },
       include: {
         association: "type",
@@ -55,6 +45,11 @@ const READ = {
 
   myStorePage({ seller_id, limit, offset, type_id, sort, order }) {
     const where = type_id ? { seller_id, type_id } : { seller_id };
+    if (order === "type_zh") {
+      order = [["type", "zh", sort]];
+    } else {
+      order = [[order, sort]];
+    }
     return {
       attributes: [
         "id",
@@ -72,14 +67,14 @@ const READ = {
       },
       limit,
       offset,
-      order: [[order, sort]],
+      order,
     };
   },
 };
 
 module.exports = {
-  ADD,
-  REMOVE,
+  CREATE,
+  DESTORY,
   UPDATE,
-  READ,
+  FIND,
 };

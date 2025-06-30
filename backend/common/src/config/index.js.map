@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["../../../../common/src/config/index.js"],"sourcesContent":["import AVATAR from \"./avatar\";\n\nexport default {\n  AVATAR,\n};\n"],"names":["AVATAR"],"mappings":";;;AAEA,MAAe,QAAA;AAAA,EACf,QAAEA,OAAM;AACR;;"}

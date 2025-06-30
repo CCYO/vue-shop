@@ -1,6 +1,6 @@
 module.exports = {
-  seller: require("./seller"),
+  user: require("./user"),
   goods: require("./goods"),
   myStore: require("./myStore"),
-  shoppingCar: require("./shoppingCar"),
+  shopping: require("./shopping"),
 };

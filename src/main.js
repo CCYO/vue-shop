@@ -26,10 +26,9 @@ app.mount("#app");
 
 async function errorHandler(error, vm, info) {
   if (error.status === 500) {
-    statusStore.reload(error.msg);
+    statusStore.reload({ prefix: error.msg });
   } else if (error.status === 401) {
-    userStore.resetUserInfo();
-    alert(`${error.msg}，請重新登入。`);
+    userStore.resetUserInfo(error.msg);
   } else {
     console.log("vue3 errorhandle");
     console.log("error", error);

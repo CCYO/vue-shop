@@ -2,7 +2,7 @@ import Ajv2019 from "ajv/dist/2019";
 import ERROR_PARAMS from "./_ERROR_PARAMS";
 
 const TOP_FIELD = "all";
-const isProd = process.env.isProd;
+const isProd = import.meta.env.MODE === "production";
 
 export default async function (data, ignore_list = []) {
   let validated_errors = {};
@@ -56,9 +56,9 @@ function _init_errors(invalid_errors) {
       //  "myKeyword"：自訂義keyword的校驗函數設定錯誤提醒
       message,
     } = invalid_error;
-    //  ↓ 忽略未自定義message的校驗錯誤
+
     if (!["errorMessage", "myKeyword"].some((item) => item === keyword)) {
-      !isProd && console.log(`@keyword: ${keyword} 沒有預定義錯誤訊息，故忽略`);
+      console.warn(`keyword「${keyword}」沒有設置錯誤訊息，請檢查！`);
       return acc;
     }
     let { errors } = params;
@@ -66,8 +66,8 @@ function _init_errors(invalid_errors) {
     if (!instancePath) {
       errors.reduce((_acc, error) => {
         let { keyword: origin_keyword, params: origin_params } = error;
-        let key = ERROR_PARAMS[origin_keyword];
-        let field_name = origin_params[key];
+        let paramKey = ERROR_PARAMS[origin_keyword];
+        let field_name = origin_params[paramKey];
         let item = _acc.find(({ keyword }) => keyword === origin_keyword);
         if (!item) {
           _acc.push({ keyword: origin_keyword, list: [field_name], message });
@@ -80,8 +80,8 @@ function _init_errors(invalid_errors) {
     }
     // JSON Pointer 級別與被校驗資料相同&以下的錯誤
     //  { [field_name]: [{ keyword, message }, ...], ... }
-    let field_name = instancePath.split("/").pop();
     let { keyword: origin_keyword } = errors[0];
+    let field_name = instancePath.split("/").pop();
     if (!acc[field_name]) {
       acc[field_name] = [];
     }

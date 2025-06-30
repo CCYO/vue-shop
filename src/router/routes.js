@@ -1,8 +1,8 @@
 export default [
   {
-    path: "/login",
-    name: "login",
-    component: () => import("../views/Login/index.vue"),
+    path: "/auth",
+    name: "auth",
+    component: () => import("../views/Auth/index.vue"),
     meta: {
       title: undefined,
     },
@@ -16,9 +16,9 @@ export default [
     },
     children: [
       {
-        path: "/shop",
-        name: "shop",
-        component: () => import("../views/Shop/index.vue"),
+        path: "/mall",
+        name: "mall",
+        component: () => import("../views/Mall/index.vue"),
         meta: {
           title: "Vue商城",
         },
@@ -26,25 +26,41 @@ export default [
           {
             path: ":type",
             name: "goods",
-            component: () => import("@/views/Shop/Goods/index.vue"),
+            component: () => import("@/views/Mall/Goods/index.vue"),
           },
           {
-            path: "/shop",
-            redirect: "/shop/hot?page=1",
+            path: "/mall",
+            redirect: "/mall/hot?page=1",
           },
           {
             path: "/",
-            redirect: "/shop/hot?page=1",
+            redirect: "/mall/hot?page=1",
           },
         ],
       },
       {
-        path: "/shoppingCart",
-        name: "shoppingCart",
-        component: () => import("../views/ShoppingCart/index.vue"),
+        path: "/shopping",
+        name: "shopping",
+        component: () => import("../views/Shopping/index.vue"),
         meta: {
           title: "購物車",
         },
+        children: [
+          {
+            path: "car",
+            name: "car",
+            component: () => import("@/views/Shopping/Car/index.vue"),
+          },
+          {
+            path: "order",
+            name: "order",
+            component: () => import("@/views/Shopping/Order/index.vue"),
+          },
+          {
+            path: "/shopping",
+            redirect: "/shopping/car",
+          },
+        ],
       },
       {
         path: "/myStore",

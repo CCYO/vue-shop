@@ -1,48 +1,48 @@
 const S = require("../server");
 const C_goodType = require("./goodType");
-const { query, SuccModel, ErrModel, MyErr } = require("../utils");
-const { ERR_RES } = require("../config");
+const { query, SuccModel, ErrModel, ERR_RES } = require("../utils");
 
 async function addGood(payload) {
-  const { id } = await S.good.create(query.MY_STORE.ADD.one(payload));
-  return await readGood({ id, seller_id: payload.seller_id });
+  const { id } = await S.goods.create(query.MY_STORE.CREATE.one(payload));
+  return await readGood({ id });
 }
 
 async function removeGood(payload) {
-  await S.good.destory(query.MY_STORE.REMOVE.one(payload));
+  await S.goods.destory(query.MY_STORE.DESTORY.one(payload));
   return new SuccModel();
 }
 
 async function modifyGood(data) {
-  await S.good.update(query.MY_STORE.UPDATE.one(data));
+  await S.goods.update(query.MY_STORE.UPDATE.one(data));
   return new SuccModel();
 }
 
 async function readPage(payload) {
-  const { count, goods } = await S.good.findAndCount(
-    query.MY_STORE.READ.myStorePage(payload)
+  const { count, list } = await S.goods.findAndCount(
+    query.MY_STORE.FIND.myStorePage(payload)
   );
   const result = {
     count,
-    goods,
+    list,
   };
   if (!payload.inited) {
-    const { data } = await C_goodType.read();
-    result.types = data;
+    const {
+      data: { types },
+    } = await C_goodType.readAll();
+    result.types = types;
   }
   return new SuccModel({ data: result });
 }
 
 async function readGood(payload) {
-  const { id, seller_id } = payload;
-  const [result] = await S.good.find(
-    query.MY_STORE.READ.myGood({ id, seller_id })
-  );
+  const {
+    list: [item],
+  } = await S.goods.findAndCount(query.MY_STORE.FIND.myGood(payload));
   let resModel;
-  if (result) {
-    resModel = new SuccModel({ data: { good: result } });
+  if (item) {
+    resModel = new SuccModel({ data: { item } });
   } else {
-    resModel = new ErrModel(ERR_RES.GOOD.READ.NO_ROW);
+    resModel = new ErrModel(ERR_RES.GOODS.FIND.NO_ROW);
   }
   return resModel;
 }

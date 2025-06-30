@@ -6,4 +6,5 @@ export default {
   _noSpace: "_noSpace",
   _notRepeat: "_notRepeat",
   _notEmpty: "_notEmpty",
+  _items: "_items",
 };

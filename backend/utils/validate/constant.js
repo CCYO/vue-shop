@@ -1,16 +1,32 @@
 const SCHEMA_NAME = {
   base: "base",
-  login: "login",
-  register: "register",
 
-  addMyGood: "addMyGood",
-  removeMyGood: "removeMyGood",
-  modifyMyGood: "modifyMyGood",
-  getPageOfMyStore: "getPageOfMyStore",
+  user: {
+    login: "user_login",
+    register: "user_register",
+    setting: "user_setting",
+    password: "user_password",
+  },
 
-  readGoodList: "readGoodList",
+  myStore: {
+    add: "myStore_add",
+    remove: "myStore_remove",
+    modify: "myStore_modify",
+    readPage: "myStore_readPage",
+  },
 
-  readGoodInCar: "readGoodInCar",
+  goods: {
+    readPage: "goods_readPage",
+  },
+
+  shopping: {
+    add: "shopping_add",
+    remove: "shopping_remove",
+    modify: "shopping_modify",
+    order: "shopping_order",
+    readPage: "shopping_readPage",
+    read: "shopping_read",
+  },
 };
 
 const HOST = "http://backend_validate";

@@ -16,33 +16,33 @@ const defaultUserInfo = {
 export const useUserStore = defineStore("user", () => {
   const userInfo = reactive({ ...defaultUserInfo });
   const isRegisterTabActive = ref(
+    // 提供一個標記，可以藉由輸入網址的方法前往註冊組件
     Boolean($router.currentRoute.value.query.toRegister)
   );
-  const needRedirect = ref(true);
+
+  const ref_from = ref("");
 
   watch(
     () => userInfo.id,
     async (newValue, oldValue) => {
-      if (newValue) {
-        return;
+      let isLogin = Boolean(newValue);
+      if (!isLogin) {
+        // 前往login組件
+        await toLoginPage();
       }
-      toggleRegisterTab(false);
-      if (needRedirect.value) {
-        isRegisterTabActive.value = false;
-        await $router.push({ name: "login" });
-        needRedirect.value = true;
-      } else {
-        needRedirect.value = false;
-      }
-      return;
     }
   );
 
-  function toggleRegisterTab(force) {
-    if (force === undefined) {
-      isRegisterTabActive.value = !isRegisterTabActive.value;
+  async function toLoginPage() {
+    toggleRegisterTab(false);
+    await $router.push({ name: "auth" });
+  }
+  // 可以決定當前調用 $router.push({ name: 'auth'})時，顯示的是登入or註冊組件
+  function toggleRegisterTab(force = false) {
+    if (typeof force === "boolean") {
+      isRegisterTabActive.value = force;
     } else {
-      isRegisterTabActive.value = Boolean(force);
+      isRegisterTabActive.value = !isRegisterTabActive.value;
     }
   }
 
@@ -65,18 +65,29 @@ export const useUserStore = defineStore("user", () => {
   }
 
   function updateUserInfo(data) {
-    if (!data) {
-      return null;
-    } else {
-      Object.assign(userInfo, data);
-      sessionStorage.setItem("userInfo", JSON.stringify(data));
-      return userInfo;
-    }
+    Object.assign(userInfo, data);
+    sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+    return userInfo;
   }
-  function resetUserInfo(toLoginPage = true) {
-    needRedirect.value = toLoginPage;
+
+  async function requestModify(payload) {
+    const response = await request.USER.MODIFY(payload);
+    if (response.errno) {
+      return response.msg;
+    }
+    updateUserInfo(response.data.item);
+    return null;
+  }
+
+  // 將userInfo調整為初始狀態(登出狀態)
+  // toLoginPage可以決定是否跳轉至登入頁面
+  function resetUserInfo(msg) {
     Object.assign(userInfo, defaultUserInfo);
     sessionStorage.removeItem("userInfo");
+    if (msg) {
+      alert(msg);
+      ref_from.value = $router.currentRoute.value.path;
+    }
   }
   async function getUserInfo() {
     const { data } = await request.USER.CHECK();
@@ -92,9 +103,28 @@ export const useUserStore = defineStore("user", () => {
     const { errno, data, msg } = await request.USER.LOGIN(payload);
     if (!errno) {
       updateUserInfo(data);
+      if (ref_from.value) {
+        await $router.push({ path: ref_from.value });
+        ref_from.value = "";
+      } else {
+        await $router.push({
+          name: "goods",
+          params: { type: "hot" },
+          query: { page: 1 },
+        });
+      }
     } else {
       return msg;
     }
+  }
+
+  async function checkPassword(payload) {
+    const response = await request.USER.CHECK_PASSWORD(payload);
+    let msg = null;
+    if (response.errno) {
+      msg = response.msg;
+    }
+    return msg;
   }
 
   async function register(payload) {
@@ -111,6 +141,8 @@ export const useUserStore = defineStore("user", () => {
     login,
     logout,
     register,
+    requestModify,
+    checkPassword,
 
     toggleRegisterTab,
     isRegisterTabActive,

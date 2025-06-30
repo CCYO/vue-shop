@@ -1,8 +1,7 @@
-const seq = require("../_seq");
-const Seller = require("./Seller");
-const Good = require("./Good");
-const GoodType = require("./GoodType");
-const ShoppingCar = require("./ShoppingCar");
+const User = require("./User");
+const Goods = require("./Goods");
+const GoodsType = require("./GoodsType");
+const Shopping = require("./Shopping");
 /**
  * 1:1 與 1: N
  * onDelete: 'SET NULL'
@@ -19,36 +18,49 @@ const ShoppingCar = require("./ShoppingCar");
 
 //  SourceModel 作為 foreignKey 的來源，
 //  as 是 TargetModel 的別名，
-Seller.belongsToMany(Good, {
-  as: { singular: "goodInCart", plural: "goodsInCart" },
-  through: ShoppingCar,
-  foreignKey: "seller_id",
+User.belongsToMany(Goods, {
+  as: { singular: "goodsOfBuyer", plural: "goodsListOfBuyer" },
+  through: Shopping,
+  foreignKey: "buyer_id",
   targetKey: "id",
 });
-Good.belongsToMany(Seller, {
-  as: { singular: "buyer", plural: "buyers" },
-  through: ShoppingCar,
-  foreignKey: "good_id",
+Goods.belongsToMany(User, {
+  as: { singular: "buyerOfGoods", plural: "buyerListOfGoods" },
+  through: Shopping,
+  foreignKey: "goods_id",
   targetKey: "id",
+});
+Shopping.belongsTo(User, {
+  as: "itemToBuyer",
+  foreignKey: "buyer_id",
+  targetKey: "id",
+  onDelete: "CASCADE",
+});
+
+Shopping.belongsTo(Goods, {
+  as: "itemToGoods",
+  foreignKey: "goods_id",
+  targetKey: "id",
+  onDelete: "CASCADE",
 });
 //  User : Blog = 1 : N
-GoodType.hasMany(Good, {
-  as: { singular: "good", plural: "goods" },
+GoodsType.hasMany(Goods, {
+  as: { singular: "goods", plural: "goodsList" },
   foreignKey: "type_id",
   sourceKey: "id",
 });
-Good.belongsTo(GoodType, {
+Goods.belongsTo(GoodsType, {
   as: "type",
   foreignKey: "type_id",
   targetKey: "id",
   onDelete: "CASCADE",
 });
-Seller.hasMany(Good, {
-  as: { singular: "good", plural: "goods" },
+User.hasMany(Goods, {
+  as: { singular: "goods", plural: "goodsList" },
   foreignKey: "seller_id",
   sourceKey: "id",
 });
-Good.belongsTo(Seller, {
+Goods.belongsTo(User, {
   as: "seller",
   foreignKey: "seller_id",
   targetKey: "id",
@@ -56,8 +68,8 @@ Good.belongsTo(Seller, {
 });
 
 module.exports = {
-  seq,
-  Seller,
-  Good,
-  GoodType,
+  User,
+  Goods,
+  GoodsType,
+  Shopping,
 };

@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["../../../../common/src/errRes/index.js"],"sourcesContent":["import PERMISSION from \"./permission\";\n\nexport default {\n  PERMISSION,\n};\n"],"names":["PERMISSION"],"mappings":";;;AAEA,MAAe,QAAA;AAAA,EACf,YAAEA,WAAU;AACZ;;"}

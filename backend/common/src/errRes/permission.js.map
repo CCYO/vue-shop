@@ -1,0 +1,1 @@
+{"version":3,"file":"permission.js","sources":["../../../../common/src/errRes/permission.js"],"sourcesContent":["const FIND = {\n  NEED_LOGIN: {\n    errno: 40902,\n    msg: \"需要登入權限\",\n  },\n};\n\nexport default {\n  FIND,\n};\n"],"names":[],"mappings":";;AAAA,MAAM,OAAO;AAAA,EACX,YAAY;AAAA,IACV,OAAO;AAAA,IACP,KAAK;AAAA,EACN;AACH;AAEA,MAAe,aAAA;AAAA,EACb;AACF;;"}

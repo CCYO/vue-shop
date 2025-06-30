@@ -1,7 +1,7 @@
 /* CONFIG     ----------------------------------------------------------------------------- */
 
 /* UTILS      ----------------------------------------------------------------------------- */
-const { MyErr, ErrModel } = require("./model");
+const { MyErr } = require("./model");
 
 async function middleware(ctx, next) {
   try {

@@ -1,7 +1,7 @@
-const { COMMON } = require("../../../config");
+const { validate } = require("../../../common");
 const { SCHEMA_NAME, HOST } = require("../constant");
 
-const { attributes } = COMMON.validate;
+const { attributes } = validate;
 
 const json = {
   definitions: {
@@ -15,6 +15,8 @@ const json = {
     password: attributes.PASSWORD,
     price: attributes.PRICE,
     stock: attributes.STOCK,
+    imgExt: attributes.IMG_EXT,
+    id_list: attributes.ID_LIST,
   },
 };
 

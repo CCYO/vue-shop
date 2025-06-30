@@ -20,14 +20,11 @@
                 </template>
             </select>類型
         </p>
-
-        <button @click="statusStore.reload()">reload</button>
-        <AddGood />
-        <GoodList :list="listOfPage" :num="rowsOfPage" />
+        <AddGoods />
+        <GoodsList :list="listOfPage" :num="rowsOfPage" />
 
         每頁顯示幾筆資料
         <select v-model="rowsOfPage">
-            <!-- <template v-for="n of countOfGoodsPerPage"> -->
             <template v-for="n of maxRowsOfPage">
                 <option v-if="n >= minRowsOfPage" :value="n">{{ n }}</option>
             </template>
@@ -36,7 +33,7 @@
             <BRow>
                 <BCol>
                     <div class="overflow-auto">
-                        <b-pagination v-model="currentPage" :total-rows="myStoreStore.good.total[filterBy]"
+                        <b-pagination v-model="currentPage" :total-rows="myStoreStore.goods.total[filterBy]"
                             :per-page="rowsOfPage" :limit="pagesOfPagination" aria-controls="my-table" />
                     </div>
                 </BCol>
@@ -57,15 +54,16 @@ import { useMyStoreStore } from '@/store/myStore'
 import { usePagination } from '@/hooks'
 import { validate } from '@/utils'
 
-import AddGood from './components/AddGood.vue'
-import GoodList from '@/components/goodList/index.vue'
+import AddGoods from './components/AddGoods.vue'
+import GoodsList from './components/GoodsList.vue'
 
 const defaultVal = Object.defineProperties({}, {
     orderOptions: {
         get: () => [
-            { zh: '上架時間', value: 'createdAt' },
-            { zh: '類型', value: 'type_id' },
             { zh: '價格', value: 'price' },
+            { zh: '商品名稱', value: 'name' },
+            { zh: '類型名稱', value: 'type_zh' },
+            { zh: '上架時間', value: 'createdAt' },
         ]
     }
 })
@@ -85,8 +83,8 @@ const orderBy = ref('createdAt')
 const sortBy = ref('desc')
 // 過濾類型的選單
 const filterTypeOptions = computed(() => {
-    return myStoreStore.good.types.filter(item => {
-        if (orderBy.value === 'type_id') {
+    return myStoreStore.goods.types.filter(item => {
+        if (orderBy.value === 'type_zh') {
             return !item.id
         } else {
             return true
@@ -99,8 +97,7 @@ const orderOptions = computed(() => {
         if (filterBy.value === 'all') {
             return true
         } else {
-            return item.value !== 'type_id'
-
+            return item.value !== 'type_zh'
         }
     })
 })
@@ -112,21 +109,21 @@ const sortOptions = computed(() => {
             { zh: '由新至舊', value: 'desc' },
             { zh: '由舊至新', value: 'asc' },
         ]
-    } else if (order === 'type_id') {
-        return [
-            { zh: '由Z到A', value: 'desc' },
-            { zh: '由A到Z', value: 'asc' },
-        ]
-    } else {
+    } else if (order === 'price') {
         return [
             { zh: '由高至低', value: 'desc' },
             { zh: '由低至高', value: 'asc' },
         ]
+    } else {
+        return [
+            { zh: '由Z到A', value: 'desc' },
+            { zh: '由A到Z', value: 'asc' },
+        ]
     }
 })
 
-const goodList = computed(() => {
-    let result = myStoreStore.good.list
+const goodsList = computed(() => {
+    let result = myStoreStore.goods.list
     if (filterBy.value !== 'all') {
         result = result.filter(item => item.type.en === filterBy.value)
     }
@@ -142,26 +139,31 @@ const goodList = computed(() => {
                 } else {
                     return B - A
                 }
-            } else if (orderBy.value === 'type_id') {
-                A = a.type.zh
-                B = b.type.zh
-                if (sortBy.value === 'asc') {
-                    return A.localeCompare(B)
-                } else {
-                    return B.localeCompare(A)
-                }
-            } else if (sortBy.value === 'asc') {
-                return a[orderBy.value] - b[orderBy.value]
-            } else {
-                return b[orderBy.value] - a[orderBy.value]
             }
+            // 價格
+            else if (orderBy.value === 'price') {
+                if (sortBy.value === 'asc') {
+                    return a[orderBy.value] - b[orderBy.value]
+                } else {
+                    return b[orderBy.value] - a[orderBy.value]
+                }
+            }
+            // 商品名稱或類型名稱
+            else {
+                let A = orderBy.value === 'type_zh' ? a.type.zh : a.name
+                let B = orderBy.value === 'type_zh' ? b.type.zh : b.name
+                if (sortBy.value === 'asc') {
+                    return A.localeCompare(B, 'en')
+                } else {
+                    return B.localeCompare(A, 'en')
+                }
+            }
+
         })
 })
 const listOfPage = computed(() => {
     const { start, end } = offset.value
-    let res = goodList.value.slice(start, end)
-    console.log('res', res)
-    return res
+    return goodsList.value.slice(start, end)
 })
 
 watch([offset, filterBy, orderBy, sortBy], getListOfPage)
@@ -169,8 +171,8 @@ watch([offset, filterBy, orderBy, sortBy], getListOfPage)
 onMounted(async () => await getListOfPage())
 
 async function getListOfPage(newVal) {
-    const myGood = myStoreStore.good
-    const total = myGood.total[filterBy.value]
+    const myGoods = myStoreStore.goods
+    const total = myGoods.total[filterBy.value]
     if (total === undefined) {
         // 解決：當新分類資料未請求過，無法判別新分類的總數使否可達到當前頁數，故自動分配到第一頁
         if (offset.value.start !== 0) {
@@ -196,8 +198,8 @@ async function getListOfPage(newVal) {
     }
     const { start, limit } = offset.value
 
-    const inited = myStoreStore.good.types.length > 1
-    const noMoreDate = goodList.value.length === myGood.total[filterBy.value]
+    const inited = myStoreStore.goods.types.length > 1
+    const noMoreDate = goodsList.value.length === myGoods.total[filterBy.value]
     if (inited && noMoreDate) {
         return
     }
@@ -205,11 +207,11 @@ async function getListOfPage(newVal) {
         inited,
         limit,
         offset: start,
-        type_id: myStoreStore.good.types.find(item => item.en === filterBy.value).id,
+        type_id: myStoreStore.goods.types.find(item => item.en === filterBy.value).id,
         order: orderBy.value,
         sort: sortBy.value
     }
-    const { valid } = await validate.readMyGoods(payload)
+    const { valid } = await validate.myStore_readList(payload)
     let msg = null
     if (!valid) {
         msg = '發生未知錯誤'
@@ -217,7 +219,7 @@ async function getListOfPage(newVal) {
         msg = await myStoreStore.requestGoods(payload)
     }
     if (msg) {
-        statusStore.reload(msg)
+        statusStore.reload({ prefix: msg })
     }
 }
 
